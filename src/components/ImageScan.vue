@@ -1,15 +1,16 @@
 <template>
   <div class="scanner">
-    <tt>{{ photos.length }}</tt>
+    <div v-if="!photo" class="info top">
+      Please tap the button above to scan a code.
+    </div>
 
     <n-space vertical>
 
-      <n-input
-        label="Barcode"
-        type="text"
-        placeholder="Detecting barcode ..." />
+      <read-barcode :image="photo" />
 
-      <tt>Expiry date:</tt>
+      <div class="info expiry">
+        Expiry date:
+      </div>
 
       <n-date-picker
         v-model:value="expiry"
@@ -20,22 +21,25 @@
 </template>
 
 <script>
+import ReadBarcode from "./ReadBarcode.vue"
 
 import { defineComponent } from 'vue'
-import { NInput, NDatePicker } from 'naive-ui'
+import { NDatePicker, NSpace } from 'naive-ui'
 
 export default defineComponent({
   name: "image-scan",
   props: {
-    photos: Array,
+    photo: Object,
   },
   components: {
-    NInput,
+    ReadBarcode,
     NDatePicker,
+    NSpace,
   },
   data() {
     return {
-      expiry: new Date(),
+      expiry: + new Date(),
+      barcode: undefined,
       locale: undefined // Browser locale
     }
   }
@@ -48,5 +52,10 @@ button {
   height: 3em;
   background: lightgreen;
   border: 2px solid salmon;
+}
+
+.info {
+  font-family: monospace;
+  margin-top: 1em;
 }
 </style>

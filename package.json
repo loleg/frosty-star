@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "dynamsoft-javascript-barcode": "^8.4.0",
+    "quagga": "^0.12.1",
     "vue": "^3.2.4"
   },
   "devDependencies": {

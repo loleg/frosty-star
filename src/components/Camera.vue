@@ -26,12 +26,12 @@
       </n-button>
     </div>
 
-    <image-scan class="results" :photos="photos" />
+    <image-scan class="results" :photo="lastPhoto" />
   </div>
 </template>
 
 <script>
-import ImageScan from "./ImageScan.vue";
+import ImageScan from "./ImageScan.vue"
 
 import { NButton } from 'naive-ui'
 import { Camera24Filled } from '@vicons/fluent'
@@ -45,7 +45,8 @@ export default {
   },
   data() {
     return {
-      photos: [],
+      // photos: [],
+      lastPhoto: null,
       mediaStream: null,
       videoDevices: [],
       facingMode: "environment",
@@ -82,10 +83,11 @@ export default {
 
       ctx.restore();
 
-      this.photos.push({
+      this.lastPhoto = {
         id: this.counter++,
-        src: canva.toDataURL("image/png"),
-      });
+        src: canva.toDataURL("image/jpg"),
+      };
+      // this.photos.push(this.lastPhoto);
     },
     async switchCamera() {
       this.switchingCamera = true;
