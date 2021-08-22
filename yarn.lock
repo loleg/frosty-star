@@ -923,6 +923,11 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
+"@iconify/vue@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@iconify/vue/-/vue-3.0.0.tgz#7e2fa8a515aea4e50313d41acdb3cc0b3492829d"
+  integrity sha512-7heVMHkpB3d7l+/ofAQ+f9k5mETi/FWEnI5dXFQqsDmc/yuO2Nz5D9XkSDvO1b6TRVawf/kleN8JXRaClTM4nQ==
+
 "@intervolga/optimize-cssnano-plugin@^1.0.5":
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/@intervolga/optimize-cssnano-plugin/-/optimize-cssnano-plugin-1.0.6.tgz#be7c7846128b88f6a9b1d1261a0ad06eb5c0fdf8"
@@ -1208,11 +1213,6 @@
   integrity sha512-yEJzHoxf6SyQGhBhIYGXQDSCkJjB6HohDShto7m8vaKg9Yp0Yn8+71J9eakh2bnPg6BfsH9PRMhiRTZnd4eXGQ==
   dependencies:
     "@types/yargs-parser" "*"
-
-"@vicons/fluent@^0.11.0":
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/@vicons/fluent/-/fluent-0.11.0.tgz#84f3cda255539cb96f45c89c1601e2892d79826f"
-  integrity sha512-5sbdKLijk5/PBtsapDjBodskSCrfOsqOlpCbXQ33pZmY0VZ62N46Yq6SFJXHyUgFhjvReRrFe4wCGVAktchHFg==
 
 "@vue/babel-helper-vue-jsx-merge-props@^1.0.0":
   version "1.0.0"

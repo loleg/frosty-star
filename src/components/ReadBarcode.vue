@@ -1,15 +1,18 @@
 <template>
-  <div>
+  <div class="barcode-result">
+    <span class="success" v-if="result && !error">
+      Code scan success
+    </span>
+    <span class="error" v-if="error">
+      {{ error }}
+    </span>
     <n-input
         label="Barcode"
         type="text"
-        placeholder="Detecting barcode ..."
+        placeholder="Ready to detect barcode ..."
         :value="result">
           {{ result }}
     </n-input>
-    <div class="error">
-      {{ error }}
-    </div>
   </div>
 </template>
 
@@ -29,20 +32,22 @@ export default defineComponent({
   },
   data() {
     return {
-      result: undefined
+      result: undefined,
+      error: undefined
     }
   },
   watch: {
     image(newPhoto) {
-      this.result = 'Interpreting ...'
+      if (typeof newPhoto === 'undefined') return
+      this.error = 'Interpreting ...'
       this.detectPhoto(newPhoto.src)
     }
   },
   methods: {
     detectPhoto(photo) {
       let self = this
-      console.log(photo)
-      let tmpImgURL = photo //URL.createObjectURL(photo)
+      let tmpImgURL = photo
+      //URL.createObjectURL(photo)
 
       Quagga.decodeSingle(
         {
@@ -67,16 +72,17 @@ export default defineComponent({
           }
         },
         function (result) {
-          console.log(result);
-          self.result = 'Processing ...'
+          // console.log(result);
+          self.result = ''
+          self.error = null
           if (result) {
             if (result.codeResult != null) {
               self.result = result.codeResult.code
             } else {
-              self.error = "Internal error - Not detected"
+              self.error = "Not detected"
             }
           } else {
-            self.error = "Internal error - Not detected"
+            self.error = "Detection error"
           }
         }
       ) // -decodeSingle
@@ -86,4 +92,12 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.success {
+  background: lightyellow;
+  padding: 3px;
+}
+.error {
+  background: lightblue;
+  padding: 3px;
+}
 </style>

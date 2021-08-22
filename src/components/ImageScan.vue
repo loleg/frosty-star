@@ -1,10 +1,10 @@
 <template>
   <div class="scanner">
-    <div v-if="!photo" class="info top">
-      Please tap the button above to scan a code.
-    </div>
-
     <n-space vertical>
+
+      <div v-if="!photo" class="info top">
+        Tap the button above to scan a code.
+      </div>
 
       <read-barcode :image="photo" />
 

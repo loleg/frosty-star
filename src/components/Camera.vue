@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div>
     <video
       class="video"
       :class="facingMode === 'user' ? 'front' : ''"
@@ -13,7 +13,7 @@
       @click="switchCamera"
       :disabled="switchingCamera"
     >
-      <CameraSwitch24Regular />
+      <Icon icon="flat-color-icons:switch-camera" />
     </n-button>
 
     <div class="photo-button-container">
@@ -22,7 +22,9 @@
         title="Yes We Scan!"
         @click="TakePhoto"
       >
-        <Camera24Filled />
+        <span v-if="!lastPhoto">
+          Barcode
+        </span>
       </n-button>
     </div>
 
@@ -34,19 +36,18 @@
 import ImageScan from "./ImageScan.vue"
 
 import { NButton } from 'naive-ui'
-import { Camera24Filled } from '@vicons/fluent'
-import { CameraSwitch24Regular } from '@vicons/fluent'
+import { Icon } from '@iconify/vue';
 
 export default {
   components: {
     ImageScan,
     NButton,
-    Camera24Filled, CameraSwitch24Regular
+    Icon
   },
   data() {
     return {
       // photos: [],
-      lastPhoto: null,
+      lastPhoto: undefined,
       mediaStream: null,
       videoDevices: [],
       facingMode: "environment",
@@ -122,14 +123,16 @@ export default {
   width: 100vw;
   height: 100vh;*/
   display: grid;
-  grid-template-columns: [left] 90vw [bs] 5vw [es] 5vw [right];
+  grid-template-columns: [left] 5vw [bs] 90vw [es] 5vw [right];
   grid-template-rows: [top] 5vh [bs] 5vh [es] 60vh [middle] 10vh [bottom] 20vh [end];
   justify-items: center;
   overflow: hidden;
 }
 
 .video {
-  height: 100%;
+  width: 100%;
+  max-height: 500px;
+  overflow: hidden;
   grid-column: left/right;
   grid-row: top / bottom;
   user-select: none;
@@ -157,8 +160,21 @@ export default {
 }
 
 .photo-button {
-  width: 10vh;
-  height: 10vh;
+  height: 8vh; width: 8vh;
+  font-size: 8vh;
+  padding: 2vh;
+  border-radius: 8vh;
+  margin-bottom: 2vh;
+  background: white;
+  box-shadow: 5px 5px 5px rgba(0,0,0,0);
+}
+/*.photo-button:active, */
+.photo-button:hover {
+  background: lightgreen;
+  opacity: 0.5;
+}
+.photo-button span {
+  font-size: 0.5em;
 }
 
 .gallery {
