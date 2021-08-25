@@ -6,7 +6,7 @@
       ref="video"
       v-if="!errorStream"
     />
-    <canvas style="display: none" ref="canva" />
+    <canvas v-if="errorStream" ref="canva" />
 
     <n-button circle
       v-if="videoDevices.length > 1 && !errorStream"
@@ -132,7 +132,11 @@ export default {
       reader.onload = function(event){
           var img = new Image()
           img.onload = function() {
+              ctx.save();
+              canva.width = 500
+              canva.height = 400
               ctx.drawImage(img, 0, 0)
+              ctx.restore();
           }
           img.src = event.target.result;
       }
