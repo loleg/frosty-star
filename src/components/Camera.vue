@@ -4,11 +4,12 @@
       class="video"
       :class="facingMode === 'user' ? 'front' : ''"
       ref="video"
+      v-if="!errorStream"
     />
     <canvas style="display: none" ref="canva" />
 
     <n-button circle
-      v-if="videoDevices.length > 1"
+      v-if="videoDevices.length > 1 && !errorStream"
       class="switch-button"
       @click="switchCamera"
       :disabled="switchingCamera"
@@ -21,11 +22,19 @@
         class="photo-button"
         title="Yes We Scan!"
         @click="TakePhoto"
+        v-if="!errorStream"
       >
         <span v-if="!lastPhoto">
           Barcode
         </span>
       </n-button>
+
+      <div class="upload-container" v-if="errorStream">
+        <p>
+          The video stream could not be started. Try taking a photo and uploading it here:
+        </p>
+        <input type="file" accept="image/*" @change="uploadPhoto($event)">
+      </div>
     </div>
 
     <image-scan class="results" :photo="lastPhoto" />
@@ -53,17 +62,26 @@ export default {
       facingMode: "environment",
       counter: 0,
       switchingCamera: false,
+      errorStream: false,
     };
   },
   methods: {
     async StartRecording(facingMode) {
-      this.facingMode = facingMode;
-      let video = this.$refs.video;
-      this.mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: facingMode },
-      });
-      video.srcObject = this.mediaStream;
-      return await video.play();
+      this.facingMode = facingMode
+      const constraints = (window.constraints = {
+        audio: false, video: { facingMode: facingMode }
+      })
+      let video = this.$refs.video
+      this.mediaStream = await navigator.mediaDevices
+        .getUserMedia(constraints)
+        .then(stream => {
+          video.srcObject = stream
+        })
+        .catch(error => {
+          this.errorStream = true
+          console.warn(error)
+        })
+      return await video.play()
     },
     async TakePhoto() {
       let video = this.$refs.video;
@@ -100,6 +118,25 @@ export default {
         this.facingMode === "environment" ? "user" : "environment"
       );
       this.switchingCamera = false;
+    },
+    // when camera is not available
+    uploadPhoto(event) {
+      const data = URL.createObjectURL(event.target.files[0])
+      this.lastPhoto = {
+        id: this.counter++,
+        src: data,
+      }
+      let canva = this.$refs.canva
+      let ctx = canva.getContext("2d")
+      var reader = new FileReader()
+      reader.onload = function(event){
+          var img = new Image()
+          img.onload = function() {
+              ctx.drawImage(img, 0, 0)
+          }
+          img.src = event.target.result;
+      }
+      reader.readAsDataURL(event.target.files[0])
     },
   },
   async mounted() {
