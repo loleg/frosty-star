@@ -29,8 +29,8 @@
         </span>
       </n-button>
 
-      <div class="upload-container" v-if="errorStream">
-        <p>
+      <div class="upload-container">
+        <p v-if="errorStream">
           The video stream could not be started. Try taking a photo and uploading it here:
         </p>
         <input type="file" accept="image/*" @change="uploadPhoto($event)">
@@ -56,7 +56,7 @@ export default {
   data() {
     return {
       // photos: [],
-      lastPhoto: undefined,
+      lastPhoto: {},
       mediaStream: null,
       videoDevices: [],
       facingMode: "environment",

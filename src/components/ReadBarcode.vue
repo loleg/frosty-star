@@ -37,10 +37,10 @@ export default defineComponent({
     }
   },
   watch: {
-    image(newPhoto) {
-      if (typeof newPhoto === 'undefined') return
+    image() {
+      if (typeof this.image === 'undefined' || this.image === null) return
       this.error = 'Interpreting ...'
-      this.detectPhoto(newPhoto.src)
+      this.detectPhoto(this.image.src)
     }
   },
   methods: {
@@ -78,6 +78,7 @@ export default defineComponent({
           if (result) {
             if (result.codeResult != null) {
               self.result = result.codeResult.code
+              self.$emit('found-barcode', self.result)
             } else {
               self.error = "Not detected"
             }
