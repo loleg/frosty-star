@@ -10,19 +10,25 @@ The main libraries we are putting to use here are Vue, Quagga and TensorFlow, as
 
 ## User interface
 
-https://vuejs.org/
-https://iconify.design/
-https://www.naiveui.com/
+- https://vuejs.org/
+- https://iconify.design/
+- https://www.naiveui.com/
 
 ## Device access
 
-https://vue-native.io/
-https://github.com/pierresaid/vue-pwa-camera
+- https://vue-native.io/
+- https://github.com/pierresaid/vue-pwa-camera
+- https://developer.mozilla.org/en-US/docs/Web/API/ImageCapture
 
 ## Computer vision
 
-https://github.com/serratus/quaggaJS
-https://www.dynamsoft.com/store/dynamsoft-barcode-reader/
+- https://github.com/serratus/quaggaJS
+- https://www.dynamsoft.com/store/dynamsoft-barcode-reader/
+- https://tesseract.projectnaptha.com/
+
+## Data sources
+
+- https://www.foodrepo.org/api-docs/swaggers/v3
 
 # Developer instructions
 
