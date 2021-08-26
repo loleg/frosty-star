@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import Tesseract from "tesseract"
+import Tesseract from "tesseract.js"
 
 import { defineComponent } from 'vue'
 import { NInput } from 'naive-ui'
@@ -44,7 +44,7 @@ export default defineComponent({
     }
   },
   methods: {
-    detectPhoto(photo) {
+    detectPhoto(image) {
       let self = this
       console.log(`Recognizing ${image}`);
 

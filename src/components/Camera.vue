@@ -6,7 +6,7 @@
       ref="video"
       v-if="!errorStream"
     />
-    <canvas v-if="errorStream" ref="canva" />
+    <canvas style="display:none" ref="canva" />
 
     <n-button circle
       v-if="videoDevices.length > 1 && !errorStream"
@@ -28,16 +28,18 @@
           Barcode
         </span>
       </n-button>
-
-      <div class="upload-container">
-        <p v-if="errorStream">
-          The video stream could not be started. Try taking a photo and uploading it here:
-        </p>
-        <input type="file" accept="image/*" @change="uploadPhoto($event)">
-      </div>
     </div>
 
-    <image-scan class="results" :photo="lastPhoto" />
+    <div class="upload-container">
+      <p v-if="errorStream">
+        The video stream could not be started. Try taking a photo and uploading it here:
+      </p>
+      <input type="file" accept="image/*" @change="uploadPhoto($event)">
+    </div>
+
+    <div class="results-container">
+      <image-scan class="results" :photo="lastPhoto" />
+    </div>
   </div>
 </template>
 
@@ -133,6 +135,7 @@ export default {
           var img = new Image()
           img.onload = function() {
               ctx.save();
+              canva.style.display = ""
               canva.width = 500
               canva.height = 400
               ctx.drawImage(img, 0, 0)
@@ -195,7 +198,7 @@ export default {
   grid-row: middle / bottom;
   z-index: 5;
   width: 100vw;
-  height: 10vh;
+  min-height: 10vh;
   display: flex;
   justify-content: center;
 }
@@ -218,7 +221,7 @@ export default {
   font-size: 0.5em;
 }
 
-.gallery {
+.results-container {
   grid-column: left / right;
   grid-row: bottom / end;
 }
