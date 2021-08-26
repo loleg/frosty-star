@@ -27,15 +27,12 @@
         v-model:value="expiry"
         type="date" />
 
-      <read-expiry :image="photo" />
-
     </n-space>
   </div>
 </template>
 
 <script>
 import ReadBarcode from "./ReadBarcode.vue"
-import ReadExpiry from "./ReadExpiry.vue"
 
 import { defineComponent } from 'vue'
 import { NDatePicker, NSpace } from 'naive-ui'
@@ -47,7 +44,6 @@ export default defineComponent({
   },
   components: {
     ReadBarcode,
-    ReadExpiry,
     NDatePicker,
     NSpace,
   },
