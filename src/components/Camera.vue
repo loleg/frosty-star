@@ -24,9 +24,7 @@
         @click="TakePhoto"
         v-if="!errorStream"
       >
-        <span v-if="!lastPhoto">
-          Barcode
-        </span>
+        <Icon icon="flat-color-icons:camera" />
       </n-button>
     </div>
 
@@ -106,7 +104,7 @@ export default {
 
       this.lastPhoto = {
         id: this.counter++,
-        src: canva.toDataURL("image/jpg"),
+        src: canva.toDataURL("image/png"),
       };
       // this.photos.push(this.lastPhoto);
     },
@@ -136,9 +134,9 @@ export default {
           img.onload = function() {
               ctx.save();
               canva.style.display = ""
-              canva.width = 500
-              canva.height = 400
-              ctx.drawImage(img, 0, 0)
+              canva.width = 640
+              canva.height = 480
+              ctx.drawImage(img, 0, 0, canva.width, img.height * canva.width / img.width)
               ctx.restore();
           }
           img.src = event.target.result;
@@ -175,7 +173,7 @@ export default {
 
 .video {
   width: 100%;
-  max-height: 500px;
+  max-height: 480px;
   overflow: hidden;
   grid-column: left/right;
   grid-row: top / bottom;

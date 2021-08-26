@@ -17,10 +17,14 @@
 </template>
 
 <script>
-import Tesseract from "tesseract.js"
+import { createWorker, PSM, OEM } from "tesseract.js"
 
-const { createWorker } = Tesseract
-const worker = createWorker()
+const worker = createWorker({
+  logger: m => {
+    console.debug(m)
+    window.document.title = Math.round(m.progress * 100) + "%"
+  },
+})
 
 import { defineComponent } from 'vue'
 import { NInput } from 'naive-ui'
@@ -36,56 +40,56 @@ export default defineComponent({
   data() {
     return {
       result: undefined,
-      error: undefined
+      error: undefined,
     }
   },
   watch: {
     image() {
       if (typeof this.image === 'undefined' || this.image === null) return
       this.error = 'Reading ...'
-      this.detectPhoto(this.image.src)
+      let myImg = document.createElement("IMG")
+      myImg.width = 640
+      myImg.height = 480
+      myImg.src = this.image.src
+      this.detectPhoto(myImg)
     }
   },
   methods: {
     async detectPhoto(image) {
       const self = this
-      const reader = new FileReader()
 
-      return new Promise((resolve, reject) => {
-
-        reader.onerror = () => {
-          reader.abort()
-          reject(new DOMException("Problem parsing input file."))
-        }
-
-        reader.onload = async () => {
-
-          console.log(`Recognizing ...`);
-          const { data: { result } } = await worker.recognize(reader.result)
-          resolve(reader.result)
-
-          console.log(result)
-          self.result = result.toString()
+      console.log(`Recognizing ...`);
+      worker
+        .recognize(image)
+        .then(result => {
+          console.log(result.data)
           self.error = null
-
-          if (result) {
-            // self.result = result.codeResult.code
-            self.$emit('found-expiry', self.result)
+          self.result = undefined
+          if (result.data.confidence > 20 && result.data.lines.length > 0) {
+            result.data.lines.forEach(function(l) {
+              // Detect date formatting
+              if (self.result) return
+              let detect = l.text.match(/[0-9]+\.[0-9]+\.[0-9]+/)
+              if (detect !== null) {
+                const d = detect[0].trim()
+                self.result = d
+                self.$emit('found-expiry', d)
+              }
+            })
           } else {
-            self.error = "Reading error"
+            self.error = "Expiry not readable"
           }
-
-        }
-
-        reader.readAsDataURL(image)
-
-      })
+        })
     }
   },
   async mounted() {
+    console.log("Initializing worker")
     await worker.load()
     await worker.loadLanguage('eng')
-    await worker.initialize('eng')
+    await worker.initialize('eng', OEM.LSTM_ONLY)
+    await worker.setParameters({
+      tessedit_pageseg_mode: PSM.SINGLE_BLOCK,
+    })
   },
 })
 </script>

@@ -6,19 +6,23 @@
         Tap the button above to scan a code.
       </div>
 
+      <h1>Product</h1>
       <read-barcode :image="photo" @found-barcode="getFoodRepo" />
 
       <div class="info product">
-        Product data:
         <ul v-if="products">
           <li v-for="p in products" :key="p.id">
-            {{ p.name_translations.de }}</li>
+            <a :href="'https://www.foodrepo.org/ch/products/' + p.id" target="_blank">
+              {{ p.name_translations.de }}
+            </a>
+          </li>
         </ul>
         <div v-if="products && products.length === 0" class="notfound">
           No products found, please try again.
         </div>
       </div>
 
+      <h1>Expiry</h1>
       <div class="info expiry">
         Expiry date:
       </div>
@@ -27,12 +31,15 @@
         v-model:value="expiry"
         type="date" />
 
+      <read-expiry :image="photo" />
+
     </n-space>
   </div>
 </template>
 
 <script>
 import ReadBarcode from "./ReadBarcode.vue"
+import ReadExpiry from "./ReadExpiry.vue"
 
 import { defineComponent } from 'vue'
 import { NDatePicker, NSpace } from 'naive-ui'
@@ -44,6 +51,7 @@ export default defineComponent({
   },
   components: {
     ReadBarcode,
+    ReadExpiry,
     NDatePicker,
     NSpace,
   },
@@ -108,5 +116,10 @@ button {
 .info {
   font-family: monospace;
   margin-top: 1em;
+}
+
+.info ul, .info li {
+  margin: 0px; padding: 0px;
+  margin-bottom: 1em;
 }
 </style>

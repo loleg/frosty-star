@@ -73,7 +73,7 @@ export default defineComponent({
         },
         function (result) {
           // console.log(result);
-          self.result = ''
+          // self.result = ''
           self.error = null
           if (result) {
             if (result.codeResult != null) {
@@ -83,7 +83,7 @@ export default defineComponent({
               self.error = "Not detected"
             }
           } else {
-            self.error = "Detection error"
+            self.error = "Code not detected"
           }
         }
       ) // -decodeSingle
