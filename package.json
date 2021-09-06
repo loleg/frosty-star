@@ -5,14 +5,27 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "dev": "vite",
+    "report": "cross-env REPORT=true npm run build",
+    "preview": "vite preview",
+    "build typecheck": "vuedx-typecheck . && vite build",
+    "lint:eslint": "eslint \"{src,mock}/**/*.{vue,ts,tsx}\" --fix",
+    "lint:prettier": "prettier --write --loglevel warn \"src/**/*.{js,json,tsx,css,less,scss,vue,html,md}\"",
+    "lint:stylelint": "stylelint --fix \"**/*.{vue,less,postcss,css,scss}\" --cache --cache-location node_modules/.cache/stylelint/",
+    "lint:lint-staged": "lint-staged -c ./.husky/lintstagedrc.js",
+    "lint:pretty": "pretty-quick --staged",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "core-js": "^3.6.5",
-    "dynamsoft-javascript-barcode": "^8.4.0",
+    "naive-ui": "^2.16.5",
     "quagga": "^0.12.1",
     "tesseract.js": "^2.1.5",
-    "vue": "^3.2.4"
+    "vue": "^3.2.4",
+    "vue-router": "^4.0.11",
+    "vue-types": "^4.0.0",
+    "vuedraggable": "^4.0.3",
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@iconify/vue": "^3.0.0",
@@ -20,10 +33,23 @@
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "@vue/compiler-sfc": "^3.0.0-0",
+    "autoprefixer": "^10.0.2",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^7.0.0-0",
-    "naive-ui": "^2.16.5"
+    "less": "^4.1.1",
+    "less-loader": "^7",
+    "mockjs": ">=1.1.0",
+    "postcss": "^8.2.14",
+    "rollup": "^2",
+    "tailwindcss": "^2.2.7",
+    "typescript": "^4.3.5",
+    "vite": "2.4.4",
+    "vite-plugin-compression": "^0.3.1",
+    "vite-plugin-html": "^2.0.7",
+    "vite-plugin-mock": "^2.9.3",
+    "vite-plugin-style-import": "^1.0.1",
+    "webpack": "^5.0.0"
   },
   "eslintConfig": {
     "root": true,
