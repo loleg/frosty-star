@@ -2,14 +2,14 @@
   <div class="expiry-result">
     <div class="expiry-message">
       <span class="success" v-if="result && !error">
-        Expiry read success
+        Detection complete
       </span>
       <span class="error" v-if="error">
         {{ error }}
       </span>
     </div>
 
-    <div class="expiry-fields py-10">
+    <div class="expiry-fields py-5">
       <q-input
         label="Expiry"
         type="text"
@@ -57,7 +57,10 @@ export default {
   },
   watch: {
     image() {
-      if (typeof this.image === 'undefined' || this.image === null) return
+      if (typeof this.image === 'undefined' || this.image === null) {
+        console.log("Image not ready")
+        return
+      }
       this.error = 'Reading ...'
       let myImg = document.createElement("IMG")
       myImg.width = 640
@@ -69,30 +72,31 @@ export default {
   methods: {
     async detectPhoto(image) {
       const self = this
-
-      console.log(`Recognizing ...`);
+      this.error = 'Recognizing ...'
       worker
         .recognize(image)
         .then(result => {
-          console.log(result.data)
+          console.debug(result.data)
           self.error = null
-          self.result = undefined
+          let hasResult = false
           if (result.data.confidence > 20 && result.data.lines.length > 0) {
             result.data.lines.forEach(function(l) {
+              if (hasResult) return
               // Detect date formatting
-              if (self.result) return
               let detect = l.text.match(/[0-9]+\.[0-9]+\.[0-9]+/)
               if (detect !== null) {
                 const d = detect[0].trim()
-                console.log("Detected", d)
-                const m = self.moment(d, "DD.MM.YY", false)
+                console.log("Detected text:", d)
+                const m = self.moment(d, "DD.MM.YYYY", false)
                 if (!m.isValid()) {
-                  self.error = "Expiry date not understood"
+                  console.log("Expiry date not understood")
                 } else {
                   console.log(m.format())
+                  self.error = null
                   self.expiry = m.toDate()
                   self.result = m.fromNow()
                   self.$emit('found-expiry', d)
+                  hasResult = true
                 }
               }
             })

@@ -1,11 +1,11 @@
 <template>
   <div class="scanner">
 
-      <div v-if="!photo.src" class="info top">
+      <div v-show="!photo.src" class="info top">
         Tap the buttons above to scan a code or upload a photo.
       </div>
 
-      <div v-if="photo.src">
+      <div v-show="photo.src">
 
         <h1>Product info</h1>
 
@@ -25,7 +25,7 @@
         </div>
 
       </div>
-      <div v-if="photo.src" class="py-10">
+      <div v-show="photo.src" class="py-10">
 
         <h1>Expiry date</h1>
 

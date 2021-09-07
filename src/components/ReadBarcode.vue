@@ -1,21 +1,23 @@
 <template>
   <div class="barcode-result">
-    <div class="barcode-message py-5">
+    <div class="barcode-message py-1">
       <span class="success" v-if="result && !error">
-        Code scan success
+        Code scan complete
       </span>
       <span class="error" v-if="error">
         {{ error }}
       </span>
     </div>
 
-    <q-input
-      v-if="result"
-      label="Barcode"
-      type="text"
-      placeholder="Ready to detect barcode ..."
-      v-model="result">
-    </q-input>
+    <div class="barcode-fields py-5">
+      <q-input
+        v-if="result"
+        label="Barcode"
+        type="text"
+        placeholder="Ready to detect barcode ..."
+        v-model="result">
+      </q-input>
+    </div>
   </div>
 </template>
 
