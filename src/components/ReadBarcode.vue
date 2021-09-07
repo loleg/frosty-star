@@ -1,34 +1,34 @@
 <template>
   <div class="barcode-result">
-    <span class="success" v-if="result && !error">
-      Code scan success
-    </span>
-    <span class="error" v-if="error">
-      {{ error }}
-    </span>
-    <n-input
-        label="Barcode"
-        type="text"
-        placeholder="Ready to detect barcode ..."
-        :value="result">
-          {{ result }}
-    </n-input>
+    <div class="barcode-message py-5">
+      <span class="success" v-if="result && !error">
+        Code scan success
+      </span>
+      <span class="error" v-if="error">
+        {{ error }}
+      </span>
+    </div>
+
+    <q-input
+      v-if="result"
+      label="Barcode"
+      type="text"
+      placeholder="Ready to detect barcode ..."
+      v-model="result">
+    </q-input>
   </div>
 </template>
 
 <script>
 import Quagga from "quagga"
+import { ref } from 'vue';
 
-import { defineComponent } from 'vue'
-import { NInput } from 'naive-ui'
-
-export default defineComponent({
+export default {
   name: "read-barcode",
   props: {
     image: Object,
   },
   components: {
-    NInput,
   },
   data() {
     return {
@@ -83,13 +83,13 @@ export default defineComponent({
               self.error = "Not detected"
             }
           } else {
-            self.error = "Code not detected"
+            self.error = "Product code not seen"
           }
         }
       ) // -decodeSingle
     }
   }
-})
+}
 </script>
 
 <style scoped>

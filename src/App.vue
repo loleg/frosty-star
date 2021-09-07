@@ -1,26 +1,33 @@
-<template>
-  <Camera />
-</template>
+<script setup>
+import { ref } from 'vue'
 
-<script>
-import Camera from "./components/Camera.vue";
-export default {
-  name: "App",
-  components: {
-    Camera,
-  },
-};
+let counter = ref(0)
+
+setInterval(() => {
+  counter.value++
+}, 1000)
 </script>
 
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@300&display=swap');
-
-#app {
-  font-family: 'Montserrat Alternates', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  /* margin-top: 60px; */
-}
-</style>
+<template>
+  <div>
+    <header class="bg-white shadow" v-if="$route.meta.title">
+      <div class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <router-link
+          v-if="$route.meta.title !== 'Home'"
+          to="/"
+          class="inline-flex float-left items-center justify-center mr-10 px-5 py-3 text-base font-medium leading-6 text-white transition duration-150 ease-in-out bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-500 focus:outline-none"
+          >Home</router-link
+        >
+        <h1
+          @click="counter = 0"
+          class="text-3xl font-bold leading-tight text-gray-900"
+        >
+          {{ $route.meta.title }}
+        </h1>
+      </div>
+    </header>
+    <main>
+      <router-view />
+    </main>
+  </div>
+</template>

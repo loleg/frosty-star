@@ -1,22 +1,36 @@
 <template>
   <div class="expiry-result">
-    <span class="success" v-if="result && !error">
-      Expiry read success
-    </span>
-    <span class="error" v-if="error">
-      {{ error }}
-    </span>
-    <n-input
+    <div class="expiry-message">
+      <span class="success" v-if="result && !error">
+        Expiry read success
+      </span>
+      <span class="error" v-if="error">
+        {{ error }}
+      </span>
+    </div>
+
+    <div class="expiry-fields py-10">
+      <q-input
         label="Expiry"
         type="text"
         placeholder="Ready to scan ..."
-        :value="result">
-          {{ result }}
-    </n-input>
+        v-if="result"
+        v-model="result">
+      </q-input>
+
+      <q-date-picker
+        class="py-5"
+        v-model="expiry"
+        type="date" />
+    </div>
   </div>
 </template>
 
 <script>
+import { ref } from 'vue';
+
+import moment from 'moment';
+
 import { createWorker, PSM, OEM } from "tesseract.js"
 
 const worker = createWorker({
@@ -26,21 +40,19 @@ const worker = createWorker({
   },
 })
 
-import { defineComponent } from 'vue'
-import { NInput } from 'naive-ui'
-
-export default defineComponent({
+export default {
   name: "read-expiry",
   props: {
     image: Object,
   },
   components: {
-    NInput,
   },
   data() {
     return {
       result: undefined,
       error: undefined,
+      expiry: new Date(),
+      moment: moment,
     }
   },
   watch: {
@@ -72,8 +84,16 @@ export default defineComponent({
               let detect = l.text.match(/[0-9]+\.[0-9]+\.[0-9]+/)
               if (detect !== null) {
                 const d = detect[0].trim()
-                self.result = d
-                self.$emit('found-expiry', d)
+                console.log("Detected", d)
+                const m = self.moment(d, "DD.MM.YY", false)
+                if (!m.isValid()) {
+                  self.error = "Expiry date not understood"
+                } else {
+                  console.log(m.format())
+                  self.expiry = m.toDate()
+                  self.result = m.fromNow()
+                  self.$emit('found-expiry', d)
+                }
               }
             })
           } else {
@@ -91,7 +111,7 @@ export default defineComponent({
       tessedit_pageseg_mode: PSM.SINGLE_BLOCK,
     })
   },
-})
+}
 </script>
 
 <style scoped>

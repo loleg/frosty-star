@@ -1,34 +1,32 @@
 <template>
-  <div>
+  <div class="max-w-screen-xl px-4 py-0 mx-auto text-center">
+
+    <q-button
+      v-if="videoDevices.length > 1 && !errorStream"
+      class="photo-button"
+      @click="switchCamera"
+      :disabled="switchingCamera"
+      icon="q-icon-reverse" />
+
     <video
       class="video"
       :class="facingMode === 'user' ? 'front' : ''"
       ref="video"
-      v-if="!errorStream"
+      v-if="!errorStream && showStream"
     />
-    <canvas style="display:none" ref="canva" />
 
-    <n-button circle
-      v-if="videoDevices.length > 1 && !errorStream"
-      class="switch-button"
-      @click="switchCamera"
-      :disabled="switchingCamera"
-    >
-      <Icon icon="flat-color-icons:switch-camera" />
-    </n-button>
-
-    <div class="photo-button-container">
-      <n-button circle
+    <div class="text-center button-container">
+      <q-button
         class="photo-button"
         title="Yes We Scan!"
         @click="TakePhoto"
         v-if="!errorStream"
-      >
-        <Icon icon="flat-color-icons:camera" />
-      </n-button>
+        icon="q-icon-eye-fill" />
     </div>
 
-    <div class="upload-container">
+    <canvas style="display:none" ref="canva" />
+
+    <div class="upload-container py-6">
       <p v-if="errorStream">
         The video stream could not be started. Try taking a photo and uploading it here:
       </p>
@@ -43,15 +41,11 @@
 
 <script>
 import ImageScan from "./ImageScan.vue"
-
-import { NButton } from 'naive-ui'
-import { Icon } from '@iconify/vue';
+import { ref } from 'vue';
 
 export default {
   components: {
     ImageScan,
-    NButton,
-    Icon
   },
   data() {
     return {
@@ -63,6 +57,7 @@ export default {
       counter: 0,
       switchingCamera: false,
       errorStream: false,
+      showStream: true
     };
   },
   methods: {
@@ -136,7 +131,11 @@ export default {
               canva.style.display = ""
               canva.width = 640
               canva.height = 480
-              ctx.drawImage(img, 0, 0, canva.width, img.height * canva.width / img.width)
+              ctx.drawImage(
+                img,
+                0, 0,
+                canva.width, img.height * canva.width / img.width
+              )
               ctx.restore();
           }
           img.src = event.target.result;
@@ -160,6 +159,13 @@ export default {
   transform: scaleX(-1);
 }
 
+canvas {
+  width: 640px; height: 480px;
+  display: inline-block;
+  border: 4px double black;
+  background: #999;
+}
+
 .wrapper {
 /*  background-color: black;
   width: 100vw;
@@ -175,12 +181,12 @@ export default {
   width: 100%;
   max-height: 480px;
   overflow: hidden;
-  grid-column: left/right;
-  grid-row: top / bottom;
+  /* grid-column: left/right;
+  grid-row: top / bottom; */
   user-select: none;
   max-width: unset;
 }
-
+/*
 .switch-button {
   grid-column: bs / es;
   grid-row: bs / es;
@@ -199,16 +205,16 @@ export default {
   min-height: 10vh;
   display: flex;
   justify-content: center;
-}
+} */
 
 .photo-button {
-  height: 8vh; width: 8vh;
-  font-size: 8vh;
-  padding: 2vh;
-  border-radius: 8vh;
-  margin-bottom: 2vh;
-  background: white;
-  box-shadow: 5px 5px 5px rgba(0,0,0,0);
+  /* height: 8vh; width: 8vh; */
+  font-size: 4vh;
+  padding: 0 3vh 2vh;
+  /* border-radius: 8vh; */
+  /* margin-bottom: 2vh; */
+  /* background: white; */
+  /* box-shadow: 5px 5px 5px rgba(0,0,0,0); */
 }
 /*.photo-button:active, */
 .photo-button:hover {

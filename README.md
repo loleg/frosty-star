@@ -1,58 +1,53 @@
-# Frosty Star
+# `Vite + Vue 3 + Tailwind CSS (starter) ⚡`
 
-This is a prototype application for smartphones, intended to help read the use-by date / expiry date on consumer products, and additionally identify the product by barcode to obtain data.
+![Vite, Vue, Tailwind CSS](https://user-images.githubusercontent.com/11320080/111277027-a9384c00-8640-11eb-8323-21889bd7c609.png)
 
-The user scans a product with the smartphone camera, then confirms if the date and type of product has been correctly identified. We will in later stages be able to build notifications and other interfaces on top of this.
+This starter template also includes:
 
-# Project overview
+- [Vue Router 4.x](https://github.com/vuejs/vue-router-next)
+- [Inter var font](https://github.com/rsms/inter) (self-hosted, woff2, v3.19, with 'preload' attr, check out index.html)
+- [Just-in-Time](https://tailwindcss.com/docs/just-in-time-mode) mode by default introduced in Tailwind CSS v2.1 (in preview!)
+- [Headless UI](https://headlessui.dev/vue/menu) - unstyled, fully accessible UI components, designed to integrate beautifully with Tailwind CSS
+- [Heroicons](https://github.com/tailwindlabs/heroicons#vue) - beautiful hand-crafted SVG icons,
+by the makers of Tailwind CSS
 
-The main libraries we are putting to use here are Vue, Quagga and TensorFlow, as follows:
+First-party plugins needed for Tailwind UI:
 
-## User interface
+- [tailwindcss/forms](https://github.com/tailwindlabs/tailwindcss-forms)
+- [tailwindcss/typography](https://github.com/tailwindlabs/tailwindcss-typography)
+- [tailwindcss/line-clamp](https://github.com/tailwindlabs/tailwindcss-line-clamp)
+- [tailwindcss/aspect-ratio](https://github.com/tailwindlabs/tailwindcss-aspect-ratio)
 
-- https://vuejs.org/
-- https://iconify.design/
-- https://www.naiveui.com/
+### Getting Started 🚀
 
-## Device access
+[![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/web2033/vite-vue3-tailwind-starter)
 
-- https://vue-native.io/
-- https://github.com/pierresaid/vue-pwa-camera
-- https://developer.mozilla.org/en-US/docs/Web/API/ImageCapture
-
-## Computer vision
-
-- https://github.com/serratus/quaggaJS
-- https://www.dynamsoft.com/store/dynamsoft-barcode-reader/
-- https://tesseract.projectnaptha.com/
-
-## Data sources
-
-- https://www.foodrepo.org/api-docs/swaggers/v3
-
-# Developer instructions
-
-This project requires installing a recent version of Node.js (14+) and the [Yarn package manager](https://yarnpkg.com).
-
-## Project setup
-```
-yarn install
+```sh
+npx degit web2033/vite-vue3-tailwind-starter vvt-app
+cd vvt-app
 ```
 
-### Compiles and hot-reloads for development
+npm:
+```sh
+npm i
+npm run dev
+npm run build
+npm run serve
 ```
+
+yarn:
+```sh
+yarn
+yarn dev
+yarn build
 yarn serve
 ```
 
-### Compiles and minifies for production
-```
-yarn build
-```
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/web2033/vite-vue3-tailwind-starter)
 
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+#### Bonus links
+- [Enabling https on localhost](https://github.com/web2033/vite-vue3-tailwind-starter/discussions/112) (dev notes)
+- [Vite dev server with netlify dev support](https://github.com/web2033/vite-vue3-tailwind-starter/discussions/113) (dev notes)
+- [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar) - recommended (instead of Vetur) VSCode extension built specifically for Vue 3
+- [Pinia](https://pinia.esm.dev/introduction.html) - state-management alternative to Vuex 4 with a similar to upcoming Vuex 5 API
+- [VueUse](https://vueuse.org/functions.html) - collection of essential Vue Composition Utilities

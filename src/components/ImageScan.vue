@@ -1,39 +1,37 @@
 <template>
   <div class="scanner">
-    <n-space vertical>
 
-      <div v-if="!photo" class="info top">
-        Tap the button above to scan a code.
+      <div v-if="!photo.src" class="info top">
+        Tap the buttons above to scan a code or upload a photo.
       </div>
 
-      <h1>Product</h1>
-      <read-barcode :image="photo" @found-barcode="getFoodRepo" />
+      <div v-if="photo.src">
 
-      <div class="info product">
-        <ul v-if="products">
-          <li v-for="p in products" :key="p.id">
-            <a :href="'https://www.foodrepo.org/ch/products/' + p.id" target="_blank">
-              {{ p.name_translations.de }}
-            </a>
-          </li>
-        </ul>
-        <div v-if="products && products.length === 0" class="notfound">
-          No products found, please try again.
+        <h1>Product info</h1>
+
+        <read-barcode :image="photo" @found-barcode="getFoodRepo" />
+
+        <div class="info product">
+          <ul v-if="products">
+            <li v-for="p in products" :key="p.id">
+              <a :href="'https://www.foodrepo.org/ch/products/' + p.id" target="_blank">
+                {{ p.name_translations.de }}
+              </a>
+            </li>
+          </ul>
+          <div v-if="products && products.length === 0" class="notfound">
+            No products found, please try again.
+          </div>
         </div>
+
       </div>
+      <div v-if="photo.src" class="py-10">
 
-      <h1>Expiry</h1>
-      <div class="info expiry">
-        Expiry date:
+        <h1>Expiry date</h1>
+
+        <read-expiry :image="photo" />
+
       </div>
-
-      <n-date-picker
-        v-model:value="expiry"
-        type="date" />
-
-      <read-expiry :image="photo" />
-
-    </n-space>
   </div>
 </template>
 
@@ -41,10 +39,9 @@
 import ReadBarcode from "./ReadBarcode.vue"
 import ReadExpiry from "./ReadExpiry.vue"
 
-import { defineComponent } from 'vue'
-import { NDatePicker, NSpace } from 'naive-ui'
+import { ref } from 'vue';
 
-export default defineComponent({
+export default {
   name: "image-scan",
   props: {
     photo: Object,
@@ -52,15 +49,12 @@ export default defineComponent({
   components: {
     ReadBarcode,
     ReadExpiry,
-    NDatePicker,
-    NSpace,
   },
   data() {
     return {
-      expiry: + new Date(),
       barcode: undefined,
       products: undefined,
-      locale: undefined // Browser locale
+      locale: undefined, // Browser locale
     }
   },
   methods: {
@@ -68,6 +62,9 @@ export default defineComponent({
       const src = "https://www.foodrepo.org/api/v3/products?" +
                   "excludes=images%2Cnutrients&barcodes=" +
                   barcode
+      if (typeof process === 'undefined' || typeof process.env === 'undefined') {
+        return console.error('Cannot access process')
+      }
       const token = process.env.VUE_APP_FOODREPO_TOKEN
       if (!token) return alert('Missing VUE_APP_FOODREPO_TOKEN')
       const headers = new Headers()
@@ -102,7 +99,7 @@ export default defineComponent({
         });
     }
   }
-})
+}
 </script>
 
 <style scoped>
