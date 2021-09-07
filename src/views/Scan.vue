@@ -14,9 +14,9 @@ import Camera from "@/components/Camera.vue";
           <router-link
             to="/scan"
             class="inline-flex items-center justify-center px-5 py-3 text-base font-medium leading-6 text-white transition duration-150 ease-in-out bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-500 focus:outline-none"
-            >Start Again</router-link
-          >
+            >Start Again</router-link>
         </div>
+      </div>
     </div>
   </div>
 </template>
