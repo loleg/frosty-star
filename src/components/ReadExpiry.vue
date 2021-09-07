@@ -7,6 +7,18 @@
       <span class="error" v-if="error">
         {{ error }}
       </span>
+      <div class="expiry-result" v-if="expiryState == 1" style="background: #f95e2d;">
+        Product is long past the expiration date!
+      </div>
+      <div class="expiry-result" v-if="expiryState == 2" style="background: #f2d22b;">
+        Expiry date has recently passed.
+      </div>
+      <div class="expiry-result" v-if="expiryState == 3" style="background: #5ecae7;">
+        Expires soon.
+      </div>
+      <div class="expiry-result" v-if="expiryState == 4" style="background: #40ba3e;">
+        Expires long in the future.
+      </div>
     </div>
 
     <div class="expiry-fields py-5">
@@ -52,6 +64,7 @@ export default {
       result: undefined,
       error: undefined,
       expiry: new Date(),
+      expiryState: 0,
       moment: moment,
     }
   },
@@ -95,6 +108,12 @@ export default {
                   self.error = null
                   self.expiry = m.toDate()
                   self.result = m.fromNow()
+                  // Check date ranges
+                  if (m.isAfter(new Date())) {
+                    self.expiryState = m.isAfter(self.moment().add(1, 'M')) ? 4 : 3
+                  } else {
+                    self.expiryState = m.isBefore(self.moment().subtract(1, 'w')) ? 2 : 1
+                  }
                   self.$emit('found-expiry', d)
                   hasResult = true
                 }
@@ -126,5 +145,11 @@ export default {
 .error {
   background: lightblue;
   padding: 3px;
+}
+.expiry-result {
+  display: inline-block;
+  border-radius: 1em;
+  padding: 1em;
+  margin: 1em;
 }
 </style>
