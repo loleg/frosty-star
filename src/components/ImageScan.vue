@@ -62,11 +62,9 @@ export default {
       const src = "https://www.foodrepo.org/api/v3/products?" +
                   "excludes=images%2Cnutrients&barcodes=" +
                   barcode
-      if (typeof process === 'undefined' || typeof process.env === 'undefined') {
-        return console.error('Cannot access process')
-      }
-      const token = process.env.VUE_APP_FOODREPO_TOKEN
-      if (!token) return alert('Missing VUE_APP_FOODREPO_TOKEN')
+
+      const token = import.meta.env.VITE_FOODREPO_TOKEN
+      if (!token) return alert('Missing VITE_FOODREPO_TOKEN')
       const headers = new Headers()
       headers.append(
         "Authorization", "Token token=" + token
