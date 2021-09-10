@@ -9,6 +9,7 @@
       icon="q-icon-reverse" />
 
     <video
+      muted playsinline autoplay
       class="video"
       :class="facingMode === 'user' ? 'front' : ''"
       ref="video"
