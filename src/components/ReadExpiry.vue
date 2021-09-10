@@ -24,7 +24,6 @@
       <q-input
         label="Expiry"
         type="text"
-        disabled="1"
         placeholder="Ready to scan ..."
         v-if="result"
         v-model="result">
