@@ -15,27 +15,47 @@
       v-if="!errorStream && showStream"
     />
 
-    <div class="text-center button-container">
+    <div
+        class="text-center button-container"
+        v-if="!errorStream">
+
       <q-button
         class="photo-button"
-        title="Yes We Scan!"
-        @click="TakePhoto"
-        v-if="!errorStream"
-        icon="q-icon-eye-fill" />
-    </div>
+        @click="TakePhoto">
+        &#128247;
+      </q-button>
 
-    <canvas style="display:none" ref="canva" />
-
-    <div class="upload-container py-6">
-      <p v-if="errorStream">
-        The video stream could not be started. Try taking a photo and uploading it here:
+      <p class="py-5">
+        Something not working?
+        <a href="#" @click="startUpload">
+          Switch to upload mode</a>.
       </p>
-      <input type="file" accept="image/*" @change="uploadPhoto($event)">
     </div>
 
-    <div class="results-container">
-      <image-scan class="results" :photo="lastPhoto" />
+    <div class="upload-container py-6" v-if="errorStream">
+      <q-upload
+        v-if="showUpload"
+        accept="image/*"
+        textUploadFile="Take a photo of the product"
+        @change="uploadPhoto($event)"
+      />
+      <q-button
+        @click="startUpload"
+        v-if="!showUpload">
+        Take another
+      </q-button>
     </div>
+
+    <div class="canvas-container">
+      <canvas style="display:none" ref="canva" />
+    </div>
+
+    <q-drawer
+        v-model:visible="drawer"
+        :width="300"
+    >
+      <image-scan :photo="lastPhoto" />
+    </q-drawer>
   </div>
 </template>
 
@@ -57,7 +77,9 @@ export default {
       counter: 0,
       switchingCamera: false,
       errorStream: false,
-      showStream: true
+      showStream: true,
+      showUpload: true,
+      drawer: true,
     };
   },
   methods: {
@@ -100,8 +122,10 @@ export default {
       this.lastPhoto = {
         id: this.counter++,
         src: canva.toDataURL("image/png"),
+        width: width, height: height
       };
       // this.photos.push(this.lastPhoto);
+      this.drawer = true
     },
     async switchCamera() {
       this.switchingCamera = true;
@@ -112,35 +136,47 @@ export default {
       await this.StartRecording(
         this.facingMode === "environment" ? "user" : "environment"
       );
-      this.switchingCamera = false;
+      this.switchingCamera = false
     },
     // when camera is not available
+    startUpload() {
+      this.showUpload = true
+      this.errorStream = true
+    },
     uploadPhoto(event) {
       const data = URL.createObjectURL(event.target.files[0])
-      this.lastPhoto = {
-        id: this.counter++,
-        src: data,
-      }
+      let self = this
       let canva = this.$refs.canva
       let ctx = canva.getContext("2d")
       var reader = new FileReader()
       reader.onload = function(event){
           var img = new Image()
           img.onload = function() {
-              ctx.save();
+              ctx.save()
               canva.style.display = ""
-              canva.width = 640
-              canva.height = 480
+              canva.height = 400
+              canva.width = canva.height *
+                            (canva.clientWidth / canva.clientHeight);
               ctx.drawImage(
                 img,
                 0, 0,
                 canva.width, img.height * canva.width / img.width
               )
-              ctx.restore();
+              ctx.restore()
           }
-          img.src = event.target.result;
+          img.src = event.target.result
+
+          self.drawer = true
+          self.showUpload = false;
+          self.lastPhoto = {
+            id: self.counter++,
+            src: data,
+            width: img.width, height: img.height
+          }
       }
-      reader.readAsDataURL(event.target.files[0])
+      if (event.target.files.length) {
+        reader.readAsDataURL(event.target.files[0])
+      }
     },
   },
   async mounted() {
@@ -160,21 +196,9 @@ export default {
 }
 
 canvas {
-  width: 640px; height: 480px;
   display: inline-block;
-  border: 4px double black;
+  border: 4px double grey;
   background: #999;
-}
-
-.wrapper {
-/*  background-color: black;
-  width: 100vw;
-  height: 100vh;*/
-  display: grid;
-  grid-template-columns: [left] 5vw [bs] 90vw [es] 5vw [right];
-  grid-template-rows: [top] 5vh [bs] 5vh [es] 60vh [middle] 10vh [bottom] 20vh [end];
-  justify-items: center;
-  overflow: hidden;
 }
 
 .video {
@@ -210,7 +234,6 @@ canvas {
 .photo-button {
   /* height: 8vh; width: 8vh; */
   font-size: 4vh;
-  padding: 0 3vh 2vh;
   /* border-radius: 8vh; */
   /* margin-bottom: 2vh; */
   /* background: white; */
@@ -225,8 +248,4 @@ canvas {
   font-size: 0.5em;
 }
 
-.results-container {
-  grid-column: left / right;
-  grid-row: bottom / end;
-}
 </style>

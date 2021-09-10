@@ -1,6 +1,6 @@
 <template>
   <div class="barcode-result">
-    <div class="barcode-message py-1">
+    <div class="barcode-message py-1 text-center">
       <span class="success" v-if="result && !error">
         Code scan complete
       </span>

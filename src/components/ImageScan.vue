@@ -2,14 +2,15 @@
   <div class="scanner">
 
       <div v-show="!photo.src" class="info top">
-        Tap the buttons above to scan a code or upload a photo.
+        Use the controls to take a picture of a product with your phone's camera.
+        <img src="/snap.jpg">
+        The picture should clearly show the <b>barcode</b> and/or
+        <b>expiry date</b> of your product.
       </div>
 
       <div v-show="photo.src">
 
-        <h1>Product info</h1>
-
-        <read-barcode :image="photo" @found-barcode="getFoodRepo" />
+        <h1>Product</h1>
 
         <div class="info product">
           <ul v-if="products">
@@ -24,10 +25,12 @@
           </div>
         </div>
 
-      </div>
-      <div v-show="photo.src" class="py-10">
+        <read-barcode :image="photo" @found-barcode="getFoodRepo" />
 
-        <h1>Expiry date</h1>
+      </div>
+      <div v-show="photo.src">
+
+        <h1>Expiry</h1>
 
         <read-expiry :image="photo" />
 
@@ -112,9 +115,12 @@ button {
   font-family: monospace;
   margin-top: 1em;
 }
-
 .info ul, .info li {
   margin: 0px; padding: 0px;
   margin-bottom: 1em;
+}
+.info li::before {
+  content: '✔️';
+  margin-right: 0.5em;
 }
 </style>

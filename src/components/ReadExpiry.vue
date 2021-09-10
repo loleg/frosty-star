@@ -1,30 +1,30 @@
 <template>
-  <div class="expiry-result">
-    <div class="expiry-message">
-      <span class="success" v-if="result && !error">
-        Detection complete
+  <div class="read-expiry text-center">
+
+    <div class="expiry-result">
+      <span v-if="expiryState == 1" style="background: #f95e2d;">
+        Product is long past expiry
       </span>
-      <span class="error" v-if="error">
-        {{ error }}
+      <span v-if="expiryState == 2" style="background: #f2d22b;">
+        Expiry has recently passed
       </span>
-      <div class="expiry-result" v-if="expiryState == 1" style="background: #f95e2d;">
-        Product is long past the expiration date!
-      </div>
-      <div class="expiry-result" v-if="expiryState == 2" style="background: #f2d22b;">
-        Expiry date has recently passed.
-      </div>
-      <div class="expiry-result" v-if="expiryState == 3" style="background: #5ecae7;">
-        Expires soon.
-      </div>
-      <div class="expiry-result" v-if="expiryState == 4" style="background: #40ba3e;">
-        Expires long in the future.
-      </div>
+      <span v-if="expiryState == 3" style="background: #5ecae7;">
+        Expires rather soon
+      </span>
+      <span v-if="expiryState == 4" style="background: #60da5e;">
+        Expires in the future
+      </span>
+    </div>
+
+    <div class="error" v-if="error">
+      {{ error }}
     </div>
 
     <div class="expiry-fields py-5">
       <q-input
         label="Expiry"
         type="text"
+        disabled="1"
         placeholder="Ready to scan ..."
         v-if="result"
         v-model="result">
@@ -34,6 +34,16 @@
         class="py-5"
         v-model="expiry"
         type="date" />
+
+      <div
+        class="inline-flex ml-3 rounded-md shadow"
+        v-if="expiryState > 2">
+        <a
+          href="javascript:alert('You will receive a notification when this product is about to expire.')"
+          class="inline-flex items-center justify-center px-5 py-3 text-base font-medium leading-6 text-indigo-600 transition duration-150 ease-in-out bg-white border border-transparent rounded-md hover:text-indigo-500 focus:outline-none"
+          >Add to my list</a
+        >
+      </div>
     </div>
   </div>
 </template>
@@ -47,8 +57,8 @@ import { createWorker, PSM, OEM } from "tesseract.js"
 
 const worker = createWorker({
   logger: m => {
-    console.debug(m)
-    window.document.title = Math.round(m.progress * 100) + "%"
+    // console.debug(m)
+    window.document.title = Math.round(m.progress * 100) + " %"
   },
 })
 
@@ -66,18 +76,19 @@ export default {
       expiry: new Date(),
       expiryState: 0,
       moment: moment,
+      // progress: 0,
     }
   },
   watch: {
     image() {
-      if (typeof this.image === 'undefined' || this.image === null) {
+      if (typeof this.image === 'undefined' || this.image === null || !this.image.src) {
         console.log("Image not ready")
         return
       }
       this.error = 'Reading ...'
       let myImg = document.createElement("IMG")
-      myImg.width = 640
-      myImg.height = 480
+      myImg.width = this.image.width
+      myImg.height = this.image.height
       myImg.src = this.image.src
       this.detectPhoto(myImg)
     }
@@ -86,25 +97,33 @@ export default {
     async detectPhoto(image) {
       const self = this
       this.error = 'Recognizing ...'
+      this.expiryState = 0
+
       worker
-        .recognize(image)
+        .recognize(image, {
+          tessedit_char_whitelist: '0123456789.-/',
+          load_system_dawg: 0,
+          load_freq_dawg: 0,
+          load_punc_dawg: 0,
+        })
         .then(result => {
-          console.debug(result.data)
+          // console.debug(result.data)
           self.error = null
           let hasResult = false
           if (result.data.confidence > 20 && result.data.lines.length > 0) {
             result.data.lines.forEach(function(l) {
               if (hasResult) return
               // Detect date formatting
-              let detect = l.text.match(/[0-9]+\.[0-9]+\.[0-9]+/)
+              let detect = l.text.match(/[0-9]+[\.\/\-][0-9]+[\.\/\-][0-9]+/)
               if (detect !== null) {
-                const d = detect[0].trim()
-                console.log("Detected text:", d)
+                const d = detect[0].trim().replaceAll('\/','.').replaceAll('-','.')
+                console.log("Found", d)
                 const m = self.moment(d, "DD.MM.YYYY", false)
                 if (!m.isValid()) {
-                  console.log("Expiry date not understood")
+                  // console.log("Expiry date not understood")
+                  self.error = "Not understood: " + d
                 } else {
-                  console.log(m.format())
+                  console.log("Understood", m.format())
                   self.error = null
                   self.expiry = m.toDate()
                   self.result = m.fromNow()
@@ -119,6 +138,9 @@ export default {
                 }
               }
             })
+            if (!hasResult) {
+              self.error = "Expiry date not found"
+            }
           } else {
             self.error = "Expiry not readable"
           }
@@ -133,6 +155,9 @@ export default {
     await worker.setParameters({
       tessedit_pageseg_mode: PSM.SINGLE_BLOCK,
     })
+    // worker.onmessage = ({ data }) => {
+    //   this.progress = data.progress;
+    // }
   },
 }
 </script>
@@ -146,7 +171,7 @@ export default {
   background: lightblue;
   padding: 3px;
 }
-.expiry-result {
+.expiry-result span {
   display: inline-block;
   border-radius: 1em;
   padding: 1em;
