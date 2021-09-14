@@ -32,16 +32,17 @@
       <q-date-picker
         class="py-5"
         v-model="expiry"
+        @change="editExpiryDate"
         type="date" />
 
       <div
         class="inline-flex ml-3 rounded-md shadow"
-        v-if="expiryState > 2">
-        <a
-          href="javascript:alert('You will receive a notification when this product is about to expire.')"
-          class="inline-flex items-center justify-center px-5 py-3 text-base font-medium leading-6 text-indigo-600 transition duration-150 ease-in-out bg-white border border-transparent rounded-md hover:text-indigo-500 focus:outline-none"
-          >Add to my list</a
-        >
+        v-if="!expirySaved && expiryState > 1">
+        <q-button
+          @click="saveExpiryDate"
+          icon="q-clipboard">
+          Add to my list
+        </q-button>
       </div>
     </div>
   </div>
@@ -74,6 +75,7 @@ export default {
       error: undefined,
       expiry: new Date(),
       expiryState: 0,
+      expirySaved: false,
       moment: moment,
       // progress: 0,
     }
@@ -97,6 +99,7 @@ export default {
       const self = this
       this.error = 'Recognizing ...'
       this.expiryState = 0
+      this.expirySaved = false
 
       worker
         .recognize(image, {
@@ -106,7 +109,7 @@ export default {
           load_punc_dawg: 0,
         })
         .then(result => {
-          // console.debug(result.data)
+          console.debug(result.data.text)
           self.error = null
           let hasResult = false
           if (result.data.confidence > 20 && result.data.lines.length > 0) {
@@ -125,14 +128,7 @@ export default {
                   console.log("Understood", m.format())
                   self.error = null
                   self.expiry = m.toDate()
-                  self.result = m.fromNow()
-                  // Check date ranges
-                  if (m.isAfter(new Date())) {
-                    self.expiryState = m.isAfter(self.moment().add(1, 'M')) ? 4 : 3
-                  } else {
-                    self.expiryState = m.isBefore(self.moment().subtract(1, 'w')) ? 2 : 1
-                  }
-                  self.$emit('found-expiry', d)
+                  self.editExpiryDate()
                   hasResult = true
                 }
               }
@@ -144,7 +140,22 @@ export default {
             self.error = "Expiry not readable"
           }
         })
-    }
+    },
+    saveExpiryDate() {
+      this.$emit('save-expiry', this.expiry)
+      this.expirySaved = true
+    },
+    editExpiryDate() {
+      const m = this.moment(this.expiry)
+      this.result = m.fromNow()
+      // Check date ranges
+      if (m.isAfter(new Date())) {
+        this.expiryState = m.isAfter(this.moment().add(1, 'M')) ? 4 : 3
+      } else {
+        this.expiryState = m.isBefore(this.moment().subtract(1, 'w')) ? 2 : 1
+      }
+      this.$emit('found-expiry', m)
+    },
   },
   async mounted() {
     console.log("Initializing worker")
@@ -157,7 +168,7 @@ export default {
     // worker.onmessage = ({ data }) => {
     //   this.progress = data.progress;
     // }
-  },
+  }
 }
 </script>
 

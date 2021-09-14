@@ -32,7 +32,7 @@
 
         <h1>Expiry</h1>
 
-        <read-expiry :image="photo" />
+        <read-expiry :image="photo" @save-expiry="saveProductExpiry" />
 
       </div>
   </div>
@@ -55,12 +55,34 @@ export default {
   },
   data() {
     return {
+      myList: [],
       barcode: undefined,
       products: undefined,
       locale: undefined, // Browser locale
     }
   },
+  mounted() {
+    if (localStorage.getItem('myList')) {
+      try {
+        this.myList = JSON.parse(localStorage.getItem('myList'));
+      } catch(e) {
+        localStorage.removeItem('myList');
+      }
+    }
+  },
   methods: {
+    saveProductExpiry(expiry) {
+      const products = this.products
+      if (!products || products.length === 0) {
+        return alert("Please scan a barcode to select a product")
+      }
+      let product = products[0]
+      product.expiry = expiry
+      this.myList.push(product)
+      const parsed = JSON.stringify(this.myList)
+      localStorage.setItem('myList', parsed)
+      alert("Product expiry saved")
+    },
     async getFoodRepo(barcode) {
       const src = "https://www.foodrepo.org/api/v3/products?" +
                   "excludes=images%2Cnutrients&barcodes=" +

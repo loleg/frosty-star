@@ -1,23 +1,26 @@
 <script setup>
-import ButtonRepo from '@/components/ButtonRepo.vue'
+import ProductList from '@/components/ProductList.vue'
 </script>
 
 <template>
   <div class="bg-gray-50">
     <div
-      class="max-w-screen-xl px-4 py-12 mx-auto sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between"
+      class="mx-auto sm:px-6 lg:px-8 py-8 lg:items-center lg:justify-between"
     >
       <h2
-        class="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 sm:text-4xl sm:leading-10"
+        class="clear text-3xl font-extrabold leading-9 tracking-tight text-gray-900 sm:text-4xl sm:leading-10"
       >
         frosty-star
-        <br />
-        <span class="text-indigo-600">
-            A technical demonstration of reading
-            product data on a smartphone.
-        </span>
       </h2>
-      <p>Developed by Oleg Lavrovsky, Datalets</p>
+      <h3 class="text-indigo-600">
+        A technical demonstration of reading
+        product data on a smartphone.
+      </h3>
+    </div>
+
+    <div
+      class="max-w-screen-xl px-4 mx-auto sm:px-6 lg:flex lg:items-center lg:justify-between"
+    >
       <div class="flex mt-8 lg:flex-shrink-0 lg:mt-0">
         <div class="inline-flex rounded-md shadow">
           <router-link
@@ -35,5 +38,7 @@ import ButtonRepo from '@/components/ButtonRepo.vue'
         </div>
       </div>
     </div>
+
+    <ProductList />
   </div>
 </template>

@@ -145,11 +145,11 @@ export default {
       this.errorStream = true
     },
     uploadPhoto(event) {
-      const data = URL.createObjectURL(event.target.files[0])
       let self = this
       let canva = this.$refs.canva
       let ctx = canva.getContext("2d")
       var reader = new FileReader()
+      let imgdata = null
       reader.onload = function(event){
           var img = new Image()
           img.onload = function() {
@@ -171,11 +171,12 @@ export default {
           self.showUpload = false;
           self.lastPhoto = {
             id: self.counter++,
-            src: data,
+            src: imgdata,
             width: img.width, height: img.height
           }
       }
       if (event.target.files.length) {
+        imgdata = URL.createObjectURL(event.target.files[0])
         reader.readAsDataURL(event.target.files[0])
       }
     },
