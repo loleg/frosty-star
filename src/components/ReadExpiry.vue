@@ -151,8 +151,8 @@ export default {
       // Check date ranges
       const today = this.moment()
       if (m.isAfter(today)) {
-        const in1month = today.add(1, 'M')
-        this.expiryState = m.isAfter(in1month) ? 4 : 3
+        const in2weeks = today.add(2, 'w')
+        this.expiryState = m.isAfter(in2weeks) ? 4 : 3
       } else {
         const ago1week = today.subtract(1, 'w')
         this.expiryState = m.isBefore(ago1week) ? 1 : 2
