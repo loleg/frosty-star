@@ -149,10 +149,13 @@ export default {
       const m = this.moment(this.expiry)
       this.result = m.fromNow()
       // Check date ranges
-      if (m.isAfter(new Date())) {
-        this.expiryState = m.isAfter(this.moment().add(1, 'M')) ? 4 : 3
+      const today = this.moment()
+      if (m.isAfter(today)) {
+        const in1month = today.add(1, 'M')
+        this.expiryState = m.isAfter(in1month) ? 4 : 3
       } else {
-        this.expiryState = m.isBefore(this.moment().subtract(1, 'w')) ? 2 : 1
+        const ago1week = today.subtract(1, 'w')
+        this.expiryState = m.isBefore(ago1week) ? 1 : 2
       }
       this.$emit('found-expiry', m)
     },

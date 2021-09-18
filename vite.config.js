@@ -11,6 +11,6 @@ export default defineConfig({
   },
   server: {
     open: false, // Open a web browser
-    https: false, // Start secure server
+    https: true, // Start secure server
   },
 })

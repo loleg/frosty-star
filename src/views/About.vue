@@ -14,7 +14,12 @@ import ButtonRepo from '@/components/ButtonRepo.vue'
       </h2>
 
       <p>
-        In this project, we analyse the technical viability of a solution for tackling food waste by tracking the expiry date of consumable products. The result is a report on strategies from the perspective of low-cost, open-source development, and a prototype application for smartphones intended to help identify and classify the product by scanning in the barcode and the use-by or expiry date on products. We are motivated to understand the possibilities and limitations of automatically acquiring data to meaningfully inform the user of product expiry.
+        In this project, we explore the technical viability of a solution for tackling food waste by tracking the expiry date of consumable products.
+      </p>
+
+      <p>
+        The resulting report provides strategies from the perspective of open-source development,
+        and a prototype application for smartphones intends to help identify and classify the product by scanning in the barcode and the use-by or expiry date on products. We are motivated to understand the possibilities and limitations of automatically acquiring data to meaningfully inform the user of product expiry.
       </p>
 
       <p>
@@ -32,3 +37,7 @@ import ButtonRepo from '@/components/ButtonRepo.vue'
     </div>
   </div>
 </template>
+
+<style scoped>
+  p { margin: 1em }
+</style>

@@ -1,20 +1,21 @@
 <template>
   <div class="barcode-result">
-    <div class="barcode-message py-1 text-center">
-      <span class="success" v-if="result && !error">
-        Code scan complete
-      </span>
-      <span class="error" v-if="error">
-        {{ error }}
-      </span>
-    </div>
+    <div class="barcode-fields">
+      <div class="barcode-message mb-5 text-center">
+        <div class="success" v-if="result && complete">
+          Code scan complete
+        </div>
+        <div class="error" v-if="error">
+          {{ error }}
+        </div>
+      </div>
 
-    <div class="barcode-fields py-5">
       <q-input
-        v-if="result"
         label="Barcode"
         type="text"
-        placeholder="Ready to detect barcode ..."
+        icon="search"
+        placeholder="Search for product ..."
+        v-on:keyup.enter="onEnter"
         v-model="result">
       </q-input>
     </div>
@@ -34,6 +35,7 @@ export default {
   },
   data() {
     return {
+      complete: false,
       result: undefined,
       error: undefined
     }
@@ -46,10 +48,15 @@ export default {
     }
   },
   methods: {
+    onEnter() {
+      this.complete = false
+      this.$emit('search-product', this.result)
+    },
     detectPhoto(photo) {
       let self = this
       let tmpImgURL = photo
       //URL.createObjectURL(photo)
+      self.complete = false
 
       Quagga.decodeSingle(
         {
@@ -79,6 +86,7 @@ export default {
           self.error = null
           if (result) {
             if (result.codeResult != null) {
+              self.complete = true
               self.result = result.codeResult.code
               self.$emit('found-barcode', self.result)
             } else {

@@ -1,36 +1,34 @@
 <template>
   <div class="max-w-screen-xl px-4 py-0 mx-auto text-center">
+    <div class="video-container"
+      v-if="!errorStream && showStream">
 
-    <q-button
-      v-if="videoDevices.length > 1 && !errorStream"
-      class="photo-button"
-      @click="switchCamera"
-      :disabled="switchingCamera"
-      icon="q-icon-reverse" />
+      <video
+        muted playsinline autoplay
+        :class="'video ' + facingMode === 'user' ? 'front' : ''"
+        ref="video"
+      />
 
-    <video
-      muted playsinline autoplay
-      class="video"
-      :class="facingMode === 'user' ? 'front' : ''"
-      ref="video"
-      v-if="!errorStream && showStream"
-    />
+      <div class="text-center button-container mt-1">
+        <q-button
+          class="photo-button"
+          @click="TakePhoto">
+          &#128247;
+        </q-button>
+        <q-button
+          v-if="videoDevices.length > 1"
+          class="photo-button"
+          theme="secondary"
+          @click="switchCamera"
+          :disabled="switchingCamera"
+          icon="q-icon-reverse" />
 
-    <div
-        class="text-center button-container"
-        v-if="!errorStream">
-
-      <q-button
-        class="photo-button"
-        @click="TakePhoto">
-        &#128247;
-      </q-button>
-
-      <p class="py-5">
-        Something not working?
-        <a href="#" @click="startUpload">
-          Switch to upload mode</a>.
-      </p>
+        <p class="py-5">
+          Something not working?
+          <a href="#" @click="startUpload">
+            Switch to upload mode</a>.
+        </p>
+      </div>
     </div>
 
     <div class="upload-container py-6" v-if="errorStream">
@@ -48,7 +46,8 @@
     </div>
 
     <div class="canvas-container">
-      <canvas style="display:none" ref="canva" />
+      <canvas ref="canva"
+      />
     </div>
 
     <q-drawer
@@ -108,6 +107,7 @@ export default {
       let height = video.videoHeight;
       canva.width = width;
       canva.height = height;
+
       let ctx = canva.getContext("2d");
       ctx.save();
 
@@ -126,7 +126,10 @@ export default {
         width: width, height: height
       };
       // this.photos.push(this.lastPhoto);
+
+      // Toggle drawer
       this.drawer = true
+      // this.showStream = false
     },
     async switchCamera() {
       this.switchingCamera = true;
@@ -197,10 +200,10 @@ export default {
   transform: scaleX(-1);
 }
 
-canvas {
-  display: inline-block;
+.canvas-container canvas {
   border: 4px double grey;
-  background: #999;
+  background: #fff;
+  width: 100%;
 }
 
 .video {
@@ -236,6 +239,7 @@ canvas {
 .photo-button {
   /* height: 8vh; width: 8vh; */
   font-size: 4vh;
+  padding-bottom: 5vh;
   /* border-radius: 8vh; */
   /* margin-bottom: 2vh; */
   /* background: white; */
@@ -249,5 +253,7 @@ canvas {
 .photo-button span {
   font-size: 0.5em;
 }
+
+.hidden { display: none }
 
 </style>

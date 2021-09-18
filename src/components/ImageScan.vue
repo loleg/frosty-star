@@ -20,15 +20,18 @@
               </a>
             </li>
           </ul>
-          <div v-if="products && products.length === 0" class="notfound">
-            No products found, please try again.
-          </div>
         </div>
 
-        <read-barcode :image="photo" @found-barcode="getFoodRepo" />
+        <read-barcode :image="photo"
+          @found-barcode="getFoodRepo"
+          @search-product="searchFoodRepo" />
+
+          <div v-if="products && products.length === 0" class="notfound mt-4">
+           🔍 No products found, try searching.
+          </div>
 
       </div>
-      <div v-show="photo.src">
+      <div v-show="photo.src" class="mt-8">
 
         <h1>Expiry</h1>
 
@@ -74,16 +77,81 @@ export default {
     saveProductExpiry(expiry) {
       const products = this.products
       if (!products || products.length === 0) {
-        return alert("Please scan a barcode to select a product")
+        return alert("Please scan a barcode or search for a product")
       }
       let product = products[0]
       product.expiry = expiry
       this.myList.push(product)
       const parsed = JSON.stringify(this.myList)
       localStorage.setItem('myList', parsed)
-      alert("Product expiry saved")
+      console.log("Product expiry saved")
+      this.$router.push({ path: '/' })
+    },
+    async searchFoodRepo(productname) {
+      const self = this
+      const query = {
+        // "_source": {
+        //   "includes": [
+        //     "name_translations"
+        //   ]
+        // },
+        "size": 1,
+        "query": {
+          "query_string": {
+            "fields" : [
+              // "barcode",
+              "name_translations.de"
+              // "name_translations.en"
+            ],
+            "query" : productname
+          }
+        },
+        "sort": "nutrients.sugars.per_hundred"
+      }
+      const src = "https://www.foodrepo.org/api/v3/products/_search?" +
+                  "excludes=images%2Cnutrients"
+
+      const token = import.meta.env.VITE_FOODREPO_TOKEN
+      if (!token) return alert('Missing VITE_FOODREPO_TOKEN')
+      const headers = new Headers()
+      headers.append(
+        "Authorization", "Token token=" + token
+      )
+      const request = new Request(src,
+        {
+          method: "POST",
+          headers,
+          body: JSON.stringify(query),
+          mode: "cors",
+          cache: "default"
+        }
+      )
+      fetch(request)
+        .then(async (response) => {
+          console.log('Fetching product data ...')
+          // check for error response
+          if (!response.ok) {
+            // get error message from body or default to response statusText
+            const error = (data && data.message) || response.statusText
+            return Promise.reject(error)
+          }
+          return await response.json()
+        })
+        .then(async (data) => {
+          self.products = []
+          // Translate data format
+          data.hits.hits.forEach(function(h) {
+            self.products.push(h._source)
+          })
+          // console.log(self.products)
+        })
+        .catch((error) => {
+          console.error(error)
+          // this.errorMessage = error
+        });
     },
     async getFoodRepo(barcode) {
+      const self = this
       const src = "https://www.foodrepo.org/api/v3/products?" +
                   "excludes=images%2Cnutrients&barcodes=" +
                   barcode
@@ -105,8 +173,6 @@ export default {
       fetch(request)
         .then(async (response) => {
           console.log('Fetching product data ...')
-          const { data } = await response.json()
-          this.products = data
 
           // check for error response
           if (!response.ok) {
@@ -115,6 +181,8 @@ export default {
             return Promise.reject(error)
           }
 
+          const { data } = await response.json()
+          self.products = data
         })
         .catch((error) => {
           console.error(error)

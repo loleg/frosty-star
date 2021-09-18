@@ -5,21 +5,24 @@ import ProductList from '@/components/ProductList.vue'
 <template>
   <div class="bg-gray-50">
     <div
-      class="mx-auto sm:px-6 lg:px-8 py-8 lg:items-center lg:justify-between"
+      class="mx-8 sm:px-6 lg:px-8 py-8 lg:items-center lg:justify-between"
     >
+      <img src="/tomato.png" style="float:right;width:15%">
       <h2
-        class="clear text-3xl font-extrabold leading-9 tracking-tight text-gray-900 sm:text-4xl sm:leading-10"
+        class="clear text-2xl font-extrabold leading-9 tracking-tight text-gray-900 sm:text-4xl sm:leading-10 text-gray-300"
       >
-        frosty-star
+        frosty-star v0.1.2
       </h2>
-      <h3 class="text-indigo-600">
+      <h3 class="text-gray-600">
         A technical demonstration of reading
         product data on a smartphone.
       </h3>
     </div>
 
+    <ProductList />
+
     <div
-      class="max-w-screen-xl px-4 mx-auto sm:px-6 lg:flex lg:items-center lg:justify-between"
+      class="max-w-screen-xl pb-4 px-4 mx-auto sm:px-8 md:mx-12 lg:flex items-center justify-between"
     >
       <div class="flex mt-8 lg:flex-shrink-0 lg:mt-0">
         <div class="inline-flex rounded-md shadow">
@@ -39,6 +42,5 @@ import ProductList from '@/components/ProductList.vue'
       </div>
     </div>
 
-    <ProductList />
   </div>
 </template>
